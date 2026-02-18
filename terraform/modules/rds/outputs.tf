@@ -22,3 +22,7 @@ output "db_subnet_group" {
   description = "DB subnet group name"
   value       = aws_db_subnet_group.this.name
 }
+
+output "db_identifier" {
+  value = aws_db_instance.this.id
+}
