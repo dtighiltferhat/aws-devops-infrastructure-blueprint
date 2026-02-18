@@ -72,17 +72,44 @@ resource "aws_lb_target_group" "this" {
   })
 }
 
+# HTTP Listener: either forward to TG or redirect to HTTPS
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.this.arn
   port              = var.listener_port
   protocol          = var.listener_protocol
 
+  dynamic "default_action" {
+    for_each = (var.enable_https && var.enable_http_to_https_redirect) ? [1] : []
+    content {
+      type = "redirect"
+      redirect {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
+    }
+  }
+
+  dynamic "default_action" {
+    for_each = (var.enable_https && var.enable_http_to_https_redirect) ? [] : [1]
+    content {
+      type             = "forward"
+      target_group_arn = aws_lb_target_group.this.arn
+    }
+  }
+}
+
+# HTTPS Listener (443)
+resource "aws_lb_listener" "https" {
+  count             = var.enable_https ? 1 : 0
+  load_balancer_arn = aws_lb.this.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = var.certificate_arn
+
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.this.arn
   }
-
-  tags = merge(local.common_tags, {
-    Name = "${var.name}-listener-${var.listener_port}"
-  })
 }
