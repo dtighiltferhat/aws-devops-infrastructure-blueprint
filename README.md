@@ -140,8 +140,35 @@ terraform destroy
 ```
 
 > Note: NAT Gateways and RDS instances incur AWS charges. Destroy resources after testing to avoid unnecessary costs.
+---
 
 ---
+
+## 🗄️ How to Run RDS (SSM Secret Setup + Connectivity)
+
+### 1) Create the DB password in SSM (required)
+
+```bash
+aws ssm put-parameter \
+  --name "/aws-devops-infra-blueprint/dev/db_password" \
+  --type "SecureString" \
+  --value "REPLACE_WITH_STRONG_PASSWORD" \
+  --overwrite
+```
+
+### 2) Verify the parameter exists (optional)
+
+```bash
+aws ssm get-parameter \
+  --name "/aws-devops-infra-blueprint/dev/db_password" \
+  --with-decryption
+```
+
+###3) After terraform apply, retrieve the RDS endpoint
+
+```bash
+terraform output db_endpoint
+```
 
 ## 🔐 Security & Best Practices
 
