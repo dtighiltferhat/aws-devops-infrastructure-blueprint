@@ -33,3 +33,12 @@ output "app_sg_id" {
 output "asg_name" {
   value = module.ec2.asg_name
 }
+
+output "db_endpoint" {
+  value = module.rds.db_endpoint
+}
+
+output "db_sg_id" {
+  value = module.rds.db_sg_id
+}
+
