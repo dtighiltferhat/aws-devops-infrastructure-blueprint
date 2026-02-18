@@ -53,3 +53,22 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "enable_https" {
+  description = "Enable HTTPS listener on 443"
+  type        = bool
+  default     = false
+}
+
+variable "certificate_arn" {
+  description = "ACM certificate ARN (must be in same region as ALB)"
+  type        = string
+  default     = ""
+}
+
+variable "enable_http_to_https_redirect" {
+  description = "Redirect HTTP 80 to HTTPS 443 when HTTPS is enabled"
+  type        = bool
+  default     = true
+}
+
