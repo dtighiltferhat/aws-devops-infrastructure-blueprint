@@ -102,6 +102,27 @@ ansible/
 
 ---
 
+## ▶️ How to Run (High Level)
+
+### 1) Bootstrap remote backend (run once)
+
+```bash
+cd terraform/backend
+terraform init
+terraform apply
+```
+
+### 2) Initialize DEV with remote state
+
+```bash
+cd ../environments/dev
+terraform init -backend-config=../../backend-config/dev.hcl
+terraform plan
+terraform apply
+```
+
+---
+
 ## 🔐 Security & Best Practices
 
 - Remote backend configuration
