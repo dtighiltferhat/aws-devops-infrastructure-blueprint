@@ -26,3 +26,10 @@ output "target_group_arn" {
   value = module.alb.target_group_arn
 }
 
+output "app_sg_id" {
+  value = module.ec2.app_sg_id
+}
+
+output "asg_name" {
+  value = module.ec2.asg_name
+}
