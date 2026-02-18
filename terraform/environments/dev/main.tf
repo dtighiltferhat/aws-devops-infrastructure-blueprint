@@ -31,3 +31,27 @@ module "alb" {
 
   tags = var.tags
 }
+
+module "ec2" {
+  source = "../../modules/ec2"
+
+  name        = var.name
+  environment = var.environment
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids  = module.vpc.private_subnet_ids
+
+  alb_sg_id         = module.alb.alb_sg_id
+  target_group_arn  = module.alb.target_group_arn
+
+  app_port          = 80
+  instance_type     = "t3.micro"
+
+  min_size          = 1
+  desired_capacity  = 2
+  max_size          = 3
+
+  enable_ssm = true
+  tags       = var.tags
+}
+
