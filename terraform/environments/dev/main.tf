@@ -28,6 +28,10 @@ module "alb" {
   target_port        = 80
   target_protocol    = "HTTP"
   health_check_path  = "/"
+  enable_https = true
+  certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/xxxx-xxxx-xxxx"
+  enable_http_to_https_redirect = true
+}
 
   tags = var.tags
 }
