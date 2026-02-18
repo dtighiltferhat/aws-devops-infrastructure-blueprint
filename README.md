@@ -104,6 +104,8 @@ ansible/
 
 ## ▶️ How to Run (High Level)
 
+> Prerequisites: AWS CLI configured with appropriate credentials and Terraform >= 1.5 installed.
+
 ### 1) Bootstrap remote backend (run once)
 
 ```bash
@@ -112,7 +114,17 @@ terraform init
 terraform apply
 ```
 
-### 2) Initialize DEV with remote state
+### 2) Create DB password in SSM Parameter Store (required for RDS)
+
+```bash
+aws ssm put-parameter \
+  --name "/aws-devops-infra-blueprint/dev/db_password" \
+  --type "SecureString" \
+  --value "REPLACE_WITH_STRONG_PASSWORD" \
+  --overwrite
+```
+
+### 3) Initialize DEV with remote state
 
 ```bash
 cd ../environments/dev
@@ -120,6 +132,8 @@ terraform init -backend-config=../../backend-config/dev.hcl
 terraform plan
 terraform apply
 ```
+
+> Note: NAT Gateways and RDS instances incur AWS charges. Destroy resources after testing to avoid unnecessary costs.
 
 ---
 
