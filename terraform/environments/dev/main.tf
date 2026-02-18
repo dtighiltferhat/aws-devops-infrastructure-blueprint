@@ -88,4 +88,19 @@ module "rds" {
   tags = var.tags
 }
 
+module "monitoring" {
+  source = "../../modules/monitoring"
+
+  name        = var.name
+  environment = var.environment
+  tags        = var.tags
+
+  alb_arn_suffix           = module.alb.alb_arn_suffix
+  target_group_arn_suffix  = module.alb.target_group_arn_suffix
+  asg_name                 = module.ec2.asg_name
+  db_identifier            = module.rds.db_identifier
+
+  # sns_topic_arn = "" # optional later
+}
+
 
