@@ -55,3 +55,37 @@ module "ec2" {
   tags       = var.tags
 }
 
+module "rds" {
+  source = "../../modules/rds"
+
+  name        = var.name
+  environment = var.environment
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids  = module.vpc.private_subnet_ids
+
+  # Allow DB access ONLY from app instances
+  app_sg_id = module.ec2.app_sg_id
+
+  engine         = "postgres"
+  engine_version = "16.1"
+  port           = 5432
+
+  instance_class    = "db.t3.micro"
+  allocated_storage = 20
+
+  db_name   = "appdb"
+  username  = "appadmin"
+
+  # Store DB password in SSM SecureString
+  password_ssm_param_name = "/aws-devops-infra-blueprint/dev/db_password"
+
+  multi_az               = false
+  backup_retention_period = 7
+  deletion_protection     = false
+  skip_final_snapshot     = true
+
+  tags = var.tags
+}
+
+
