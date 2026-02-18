@@ -1,6 +1,6 @@
 # AWS DevOps Infrastructure Blueprint
 
-Enterprise-style DevOps infrastructure blueprint demonstrating Infrastructure as Code, CI/CD automation, containerization, and cloud-native deployment patterns.
+Enterprise-grade AWS infrastructure blueprint demonstrating Infrastructure as Code, CI/CD automation, containerization, and cloud-native deployment patterns.
 
 [![Terraform](https://img.shields.io/badge/IaC-Terraform-blue)]()
 [![AWS](https://img.shields.io/badge/Cloud-AWS-orange)]()
@@ -104,7 +104,7 @@ ansible/
 
 ## ▶️ How to Run (High Level)
 
-> Prerequisites: AWS CLI configured with appropriate credentials and Terraform >= 1.5 installed.
+> Prerequisites: AWS CLI configured with appropriate credentials and Terraform >= 1.5 (tested with 1.6).
 
 ### 1) Bootstrap remote backend (run once)
 
@@ -131,6 +131,12 @@ cd ../environments/dev
 terraform init -backend-config=../../backend-config/dev.hcl
 terraform plan
 terraform apply
+```
+
+### 4) Tear down resources when finished
+
+```bash
+terraform destroy
 ```
 
 > Note: NAT Gateways and RDS instances incur AWS charges. Destroy resources after testing to avoid unnecessary costs.
