@@ -81,7 +81,7 @@ module "rds" {
   username  = "appadmin"
 
   # Store DB password in SSM SecureString
-  password_ssm_param_name = "/aws-devops-infra-blueprint/dev/db_password"
+  password_ssm_param_name = "/aws-devops-infrastructure-blueprint/dev/db_password"
 
   multi_az               = false
   backup_retention_period = 7
