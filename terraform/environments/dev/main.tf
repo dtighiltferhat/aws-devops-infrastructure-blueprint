@@ -18,7 +18,6 @@ module "alb" {
 
   name        = var.name
   environment = var.environment
-
   vpc_id            = module.vpc.vpc_id
   public_subnet_ids  = module.vpc.public_subnet_ids
 
@@ -28,10 +27,10 @@ module "alb" {
   target_port        = 80
   target_protocol    = "HTTP"
   health_check_path  = "/"
-  enable_https = true
-  certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/xxxx-xxxx-xxxx"
+ 
+  enable_https                  = true
+  certificate_arn               = var.certificate_arn
   enable_http_to_https_redirect = true
-}
 
   tags = var.tags
 }
