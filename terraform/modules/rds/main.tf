@@ -19,7 +19,7 @@ resource "aws_db_subnet_group" "this" {
   name       = "${var.name}-db-subnet-group"
   subnet_ids = var.private_subnet_ids
 
-  tags = merge(local.common_tags, {
+  tags   = merge(local.common_tags, {
     Name = "${var.name}-db-subnet-group"
   })
 }
@@ -45,7 +45,7 @@ resource "aws_security_group" "db" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(local.common_tags, {
+  tags   = merge(local.common_tags, {
     Name = "${var.name}-db-sg"
   })
 }
@@ -73,14 +73,15 @@ resource "aws_db_instance" "this" {
 
   backup_retention_period = var.backup_retention_period
 
-  deletion_protection = var.deletion_protection
+  deletion_protection       = var.deletion_protection
+  skip_final_snapshot       = var.skip_final_snapshot
   final_snapshot_identifier = var.skip_final_snapshot ? null : "${var.name}-${var.environment}-final-${formatdate("YYYYMMDDhhmmss", timestamp())}"
 
   # Good defaults for dev/portfolio
   auto_minor_version_upgrade = true
   apply_immediately          = var.apply_immediately
 
-  tags = merge(local.common_tags, {
+  tags   = merge(local.common_tags, {
     Name = "${var.name}-rds"
   })
 }
