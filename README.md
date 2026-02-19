@@ -37,9 +37,18 @@ This infrastructure blueprint is designed to reflect a real-world cloud architec
 - Containerized workloads
 - Kubernetes-based service orchestration
 
-Designed to support production-scale workloads with repeatable, auditable infrastructure deployments.
 
-This project simulates enterprise DevOps patterns used in real production cloud environments.
+## 🧠 Architectural Decisions
+
+- Infrastructure split into reusable modules for scalability and maintainability
+- Remote state isolated per environment to prevent cross-environment impact
+- Private compute model to reduce attack surface
+- Secrets managed via AWS SSM Parameter Store
+- CI/CD separates validation from apply for safer production workflows
+
+Designed to support secure, production-scale workloads with repeatable and auditable infrastructure deployments.
+
+This project models enterprise DevOps patterns commonly used in production AWS environments.
 
 ### ✅ Core (Production-Grade) Features
 
@@ -57,6 +66,9 @@ This project simulates enterprise DevOps patterns used in real production cloud 
 - RDS database in private subnets with DB subnet group
 - Standardized tagging strategy
 - Structured outputs and documentation
+- HTTPS listener with ACM certificate on ALB
+- CloudWatch alarms for ALB, ASG, and RDS
+- Operational dashboard for infrastructure health
 
 ---
 
@@ -85,6 +97,7 @@ terraform/
     alb/
     ec2/
     rds/
+    monitoring/
 
 cicd/
   Jenkinsfile
@@ -100,6 +113,8 @@ ansible/
   install-nginx.yml
 ```
 
+Each module is independently reusable and designed to support environment-based configuration through variables.
+
 ---
 
 ## ▶️ How to Run (High Level)
@@ -114,15 +129,7 @@ terraform init
 terraform apply
 ```
 
-### 2) Create DB password in SSM Parameter Store (required for RDS)
-
-```bash
-aws ssm put-parameter \
-  --name "/aws-devops-infra-blueprint/dev/db_password" \
-  --type "SecureString" \
-  --value "REPLACE_WITH_STRONG_PASSWORD" \
-  --overwrite
-```
+### 2) Set up required secrets (see RDS section below)
 
 ### 3) Initialize DEV with remote state
 
@@ -140,7 +147,6 @@ terraform destroy
 ```
 
 > Note: NAT Gateways and RDS instances incur AWS charges. Destroy resources after testing to avoid unnecessary costs.
----
 
 ---
 
@@ -164,7 +170,7 @@ aws ssm get-parameter \
   --with-decryption
 ```
 
-###3) After terraform apply, retrieve the RDS endpoint
+### 3) After terraform apply, retrieve the RDS endpoint
 
 ```bash
 terraform output db_endpoint
@@ -193,7 +199,7 @@ terraform output db_endpoint
 
 ## 📎 DevOps Case Study
 
-This project demonstrates how cloud infrastructure, automation, and CI/CD pipelines integrate to deliver reproducible, scalable AWS environments.
+This project demonstrates how cloud infrastructure, automation, and CI/CD pipelines integrate to deliver secure, reproducible, and scalable AWS environments.
 
 Designed to reflect real-world enterprise DevOps practices.
 
