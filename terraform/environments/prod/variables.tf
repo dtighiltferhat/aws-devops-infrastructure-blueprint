@@ -1,45 +1,62 @@
-variable "region" {
-  type        = string
-  default     = "us-east-1"
-  description = "AWS region"
-}
+variable "name"        { type = string }
+variable "environment" { type = string }
+variable "region"      { type = string }
 
-variable "name" {
-  type        = string
-  description = "Name prefix for resources"
-  default     = "dev-blueprint"
-}
-
-variable "environment" {
-  type        = string
-  description = "Environment name"
-  default     = "dev"
-}
-
-variable "vpc_cidr" {
-  type        = string
-  description = "CIDR for VPC"
-  default     = "10.10.0.0/16"
-}
+variable "vpc_cidr" { type = string }
 
 variable "public_subnet_cidrs" {
-  type        = list(string)
-  description = "Public subnet CIDRs"
-  # 3 AZs
-  default     = ["10.10.0.0/20", "10.10.16.0/20", "10.10.32.0/20"]
+  type = list(string)
 }
 
 variable "private_subnet_cidrs" {
-  type        = list(string)
-  description = "Private subnet CIDRs"
-  # 3 AZs
-  default     = ["10.10.128.0/20", "10.10.144.0/20", "10.10.160.0/20"]
+  type = list(string)
 }
 
 variable "tags" {
-  type        = map(string)
-  description = "Additional tags"
-  default     = {
-    Owner = "dtighiltferhat"
-  }
+  type    = map(string)
+  default = {}
 }
+
+# ALB / ACM
+variable "certificate_arn" {
+  description = "ACM certificate ARN in the same region as the ALB"
+  type        = string
+}
+
+# EC2 sizing for prod
+variable "instance_type" {
+  type    = string
+  default = "t3.small"
+}
+
+variable "min_size" {
+  type    = number
+  default = 2
+}
+
+variable "desired_capacity" {
+  type    = number
+  default = 2
+}
+
+variable "max_size" {
+  type    = number
+  default = 4
+}
+
+# RDS sizing for prod
+variable "db_instance_class" {
+  type    = string
+  default = "db.t3.small"
+}
+
+variable "db_allocated_storage" {
+  type    = number
+  default = 20
+}
+
+# Optional later
+# variable "sns_topic_arn" {
+#   type    = string
+#   default = ""
+# }
