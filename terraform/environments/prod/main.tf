@@ -85,6 +85,7 @@ module "rds" {
   backup_retention_period = 14
   deletion_protection     = true
   skip_final_snapshot     = false
+  apply_immediately = false
 
   tags = var.tags
 }
