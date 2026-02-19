@@ -62,7 +62,7 @@ variable "username" {
 variable "password_ssm_param_name" {
   description = "SSM Parameter name containing DB password (SecureString)"
   type        = string
-  default     = "/aws-devops-infra-blueprint/dev/db_password"
+  default     = "/aws-devops-infrastructure-blueprint/dev/db_password"
 }
 
 variable "port" {
@@ -87,6 +87,12 @@ variable "deletion_protection" {
   description = "Enable deletion protection"
   type        = bool
   default     = false
+}
+
+variable "apply_immediately" {
+  description = "Apply modifications immediately (dev true, prod false preferred)"
+  type        = bool
+  default     = true
 }
 
 variable "skip_final_snapshot" {
