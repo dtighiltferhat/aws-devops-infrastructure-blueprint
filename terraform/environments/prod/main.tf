@@ -18,16 +18,16 @@ module "alb" {
 
   name        = var.name
   environment = var.environment
-  vpc_id            = module.vpc.vpc_id
-  public_subnet_ids  = module.vpc.public_subnet_ids
 
-  # App defaults (we'll align EC2 to these later)
-  listener_port      = 80
-  listener_protocol  = "HTTP"
-  target_port        = 80
-  target_protocol    = "HTTP"
-  health_check_path  = "/"
- 
+  vpc_id           = module.vpc.vpc_id
+  public_subnet_ids = module.vpc.public_subnet_ids
+
+  listener_port     = 80
+  listener_protocol = "HTTP"
+  target_port       = 80
+  target_protocol   = "HTTP"
+  health_check_path = "/"
+
   enable_https                  = true
   certificate_arn               = var.certificate_arn
   enable_http_to_https_redirect = true
@@ -41,18 +41,18 @@ module "ec2" {
   name        = var.name
   environment = var.environment
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids  = module.vpc.private_subnet_ids
+  vpc_id            = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
 
-  alb_sg_id         = module.alb.alb_sg_id
-  target_group_arn  = module.alb.target_group_arn
+  alb_sg_id        = module.alb.alb_sg_id
+  target_group_arn = module.alb.target_group_arn
 
-  app_port          = 80
-  instance_type     = "t3.micro"
+  app_port      = 80
+  instance_type = var.instance_type
 
-  min_size          = 1
-  desired_capacity  = 2
-  max_size          = 3
+  min_size         = var.min_size
+  desired_capacity = var.desired_capacity
+  max_size         = var.max_size
 
   enable_ssm = true
   tags       = var.tags
@@ -64,29 +64,27 @@ module "rds" {
   name        = var.name
   environment = var.environment
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids  = module.vpc.private_subnet_ids
+  vpc_id            = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
 
-  # Allow DB access ONLY from app instances
   app_sg_id = module.ec2.app_sg_id
 
   engine         = "postgres"
   engine_version = "16.1"
   port           = 5432
 
-  instance_class    = "db.t3.micro"
-  allocated_storage = 20
+  instance_class    = var.db_instance_class
+  allocated_storage = var.db_allocated_storage
 
-  db_name   = "appdb"
-  username  = "appadmin"
+  db_name  = "appdb"
+  username = "appadmin"
 
-  # Store DB password in SSM SecureString
-  password_ssm_param_name = "/aws-devops-infra-blueprint/dev/db_password"
+  password_ssm_param_name = "/aws-devops-infra-blueprint/prod/db_password"
 
-  multi_az               = false
-  backup_retention_period = 7
-  deletion_protection     = false
-  skip_final_snapshot     = true
+  multi_az                = true
+  backup_retention_period = 14
+  deletion_protection     = true
+  skip_final_snapshot     = false
 
   tags = var.tags
 }
@@ -98,12 +96,10 @@ module "monitoring" {
   environment = var.environment
   tags        = var.tags
 
-  alb_arn_suffix           = module.alb.alb_arn_suffix
-  target_group_arn_suffix  = module.alb.target_group_arn_suffix
-  asg_name                 = module.ec2.asg_name
-  db_identifier            = module.rds.db_identifier
+  alb_arn_suffix          = module.alb.alb_arn_suffix
+  target_group_arn_suffix = module.alb.target_group_arn_suffix
+  asg_name                = module.ec2.asg_name
+  db_identifier           = module.rds.db_identifier
 
-  # sns_topic_arn = "" # optional later
+  # sns_topic_arn = var.sns_topic_arn
 }
-
-
