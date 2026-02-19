@@ -78,7 +78,7 @@ resource "aws_db_instance" "this" {
 
   # Good defaults for dev/portfolio
   auto_minor_version_upgrade = true
-  apply_immediately          = true
+  apply_immediately          = var.apply_immediately
 
   tags = merge(local.common_tags, {
     Name = "${var.name}-rds"
