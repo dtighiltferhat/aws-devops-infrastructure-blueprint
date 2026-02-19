@@ -19,8 +19,8 @@ variable "tags" {
 
 # ALB / ACM
 variable "certificate_arn" {
-  description = "ACM certificate ARN in the same region as the ALB"
   type        = string
+  description = "ACM certificate ARN in the same region as the ALB"
 }
 
 # EC2 sizing for prod
