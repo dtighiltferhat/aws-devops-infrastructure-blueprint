@@ -79,7 +79,7 @@ module "rds" {
   db_name  = "appdb"
   username = "appadmin"
 
-  password_ssm_param_name = "/aws-devops-infra-blueprint/prod/db_password"
+  password_ssm_param_name = "/aws-devops-infrastructure-blueprint/prod/db_password"
 
   multi_az                = true
   backup_retention_period = 14
