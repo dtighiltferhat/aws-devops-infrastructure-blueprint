@@ -83,10 +83,12 @@ module "rds" {
   # Store DB password in SSM SecureString
   password_ssm_param_name = "/aws-devops-infrastructure-blueprint/dev/db_password"
 
-  multi_az               = false
+  multi_az                = false
   backup_retention_period = 7
   deletion_protection     = false
   skip_final_snapshot     = true
+  apply_immediately       = true
+
 
   tags = var.tags
 }
