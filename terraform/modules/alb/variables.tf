@@ -61,9 +61,13 @@ variable "enable_https" {
 }
 
 variable "certificate_arn" {
-  description = "ACM certificate ARN (must be in same region as ALB)"
-  type        = string
-  default     = ""
+  description     = "ACM certificate ARN (must be in same region as ALB)"
+  type            = string
+  default         = ""
+  validation {
+    condition     = (var.enable_https == false) || (length(var.certificate_arn) > 0)
+    error_message = "certificate_arn must be set when enable_https=true."
+  }
 }
 
 variable "enable_http_to_https_redirect" {
@@ -72,3 +76,22 @@ variable "enable_http_to_https_redirect" {
   default     = true
 }
 
+variable "deletion_protection" {
+  type        = bool
+  default     = false
+}
+
+variable "enable_access_logs" { 
+  type        = bool 
+  default     = false 
+}
+
+variable "access_logs_bucket" {
+  type        = string 
+  default     = "" 
+}
+
+variable "access_logs_prefix" {
+  type        = string 
+  default     = "" 
+}
