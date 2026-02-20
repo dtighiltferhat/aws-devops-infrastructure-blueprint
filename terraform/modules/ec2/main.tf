@@ -113,7 +113,7 @@ resource "aws_launch_template" "this" {
   }
 
     metadata_options {
-    http_tokens = "required"
+      http_tokens = "required"
   }
 
   user_data = base64encode(local.user_data)
@@ -141,6 +141,7 @@ resource "aws_autoscaling_group" "this" {
   desired_capacity    = var.desired_capacity
   max_size            = var.max_size
   vpc_zone_identifier = var.private_subnet_ids
+  target_group_arns = [var.target_group_arn]
 
   health_check_type         = "ELB"
   health_check_grace_period = 180
@@ -171,18 +172,13 @@ resource "aws_autoscaling_group" "this" {
 
   dynamic "tag" {
     for_each = local.common_tags
+    iterator = t
     content {
-      key                 = tag.key
-      value               = tag.value
+      key                 = t.key
+      value               = t.value
       propagate_at_launch = true
     }
   }
-}
-
-# Attach ASG to ALB Target Group
-resource "aws_autoscaling_attachment" "tg" {
-  autoscaling_group_name = aws_autoscaling_group.this.name
-  lb_target_group_arn    = var.target_group_arn
 }
 
 resource "aws_autoscaling_policy" "cpu_target" {
@@ -190,6 +186,8 @@ resource "aws_autoscaling_policy" "cpu_target" {
   name                   = "${var.name}-cpu-tt"
   policy_type            = "TargetTrackingScaling"
   autoscaling_group_name = aws_autoscaling_group.this.name
+
+  estimated_instance_warmup = var.estimated_instance_warmup
 
   target_tracking_configuration {
     predefined_metric_specification {
@@ -206,7 +204,7 @@ resource "aws_autoscaling_policy" "alb_req_target" {
   policy_type            = "TargetTrackingScaling"
   autoscaling_group_name = aws_autoscaling_group.this.name
 
-  estimated_instance_warmup = 180
+  estimated_instance_warmup = var.estimated_instance_warmup
 
   target_tracking_configuration {
     predefined_metric_specification {
