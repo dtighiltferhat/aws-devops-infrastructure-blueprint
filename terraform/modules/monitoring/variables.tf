@@ -18,11 +18,6 @@ variable "target_group_arn_suffix" {
   type = string 
 }
 
-# ASG
-variable "asg_name" { 
-  type = string 
-}
-
 # RDS
 variable "db_identifier" {
   type = string 
