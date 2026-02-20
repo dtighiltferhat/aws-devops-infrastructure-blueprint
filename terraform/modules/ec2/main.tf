@@ -143,11 +143,23 @@ resource "aws_autoscaling_group" "this" {
   vpc_zone_identifier = var.private_subnet_ids
 
   health_check_type         = "ELB"
-  health_check_grace_period = 120
+  health_check_grace_period = 180
 
   launch_template {
     id      = aws_launch_template.this.id
     version = "$Latest"
+  }
+
+  dynamic "instance_refresh" {
+    for_each = var.enable_instance_refresh ? [1] : []
+    content {
+      strategy = "Rolling"
+      preferences {
+        min_healthy_percentage = var.instance_refresh_min_healthy_percentage
+        instance_warmup        = var.instance_refresh_warmup
+      }
+      triggers = ["launch_template"]
+    }
   }
 
   # Tags propagated to instances
@@ -193,6 +205,8 @@ resource "aws_autoscaling_policy" "alb_req_target" {
   name                   = "${var.name}-alb-req-tt"
   policy_type            = "TargetTrackingScaling"
   autoscaling_group_name = aws_autoscaling_group.this.name
+
+  estimated_instance_warmup = 180
 
   target_tracking_configuration {
     predefined_metric_specification {
