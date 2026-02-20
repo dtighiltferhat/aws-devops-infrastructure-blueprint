@@ -159,6 +159,30 @@ resource "aws_cloudwatch_dashboard" "this" {
           period = 60
           stat   = "Average"
         }
+      },
+      {
+        type = "metric"
+        x = 12, y = 6, width = 12, height = 6
+        properties = {
+          title = "RDS FreeStorageSpace"
+          metrics = [
+            ["AWS/RDS", "FreeStorageSpace", "DBInstanceIdentifier", var.db_identifier]
+          ]
+          period = 300
+          stat   = "Average"
+        }
+      },
+      {
+        type = "metric"
+        x = 0, y = 6, width = 12, height = 6
+        properties = {
+          title = "ALB UnHealthyHostCount"
+          metrics = [
+            ["AWS/ApplicationELB", "UnHealthyHostCount", "LoadBalancer", var.alb_arn_suffix, "TargetGroup", var.target_group_arn_suffix]
+          ]
+          period = 60
+          stat   = "Average"
+        }
       }
     ]
   })
