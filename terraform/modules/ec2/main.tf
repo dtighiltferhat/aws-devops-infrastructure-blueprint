@@ -112,8 +112,8 @@ resource "aws_launch_template" "this" {
     name = var.enable_ssm ? aws_iam_instance_profile.ssm[0].name : null
   }
 
-    metadata_options {
-      http_tokens = "required"
+  metadata_options {
+    http_tokens = "required"
   }
 
   user_data = base64encode(local.user_data)
@@ -161,6 +161,10 @@ resource "aws_autoscaling_group" "this" {
       }
       triggers = ["launch_template"]
     }
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   # Tags propagated to instances
