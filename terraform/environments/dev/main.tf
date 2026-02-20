@@ -18,7 +18,7 @@ module "alb" {
 
   name        = var.name
   environment = var.environment
-  vpc_id            = module.vpc.vpc_id
+  vpc_id             = module.vpc.vpc_id
   public_subnet_ids  = module.vpc.public_subnet_ids
 
   # App defaults (we'll align EC2 to these later)
@@ -41,7 +41,7 @@ module "ec2" {
   name        = var.name
   environment = var.environment
 
-  vpc_id             = module.vpc.vpc_id
+  vpc_id              = module.vpc.vpc_id
   private_subnet_ids  = module.vpc.private_subnet_ids
 
   alb_sg_id         = module.alb.alb_sg_id
@@ -54,7 +54,11 @@ module "ec2" {
   desired_capacity  = 2
   max_size          = 3
 
-  enable_ssm = true
+  enable_ssm         = true
+  enable_autoscaling = true
+  scale_policy       = "cpu"
+  cpu_target_value   = 50
+
   tags       = var.tags
 }
 
