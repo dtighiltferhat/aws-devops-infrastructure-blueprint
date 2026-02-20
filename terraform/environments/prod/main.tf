@@ -104,8 +104,8 @@ module "monitoring" {
 
   alb_arn_suffix          = module.alb.alb_arn_suffix
   target_group_arn_suffix = module.alb.target_group_arn_suffix
-  asg_name                = module.ec2.asg_name
   db_identifier           = module.rds.db_identifier
 
   # sns_topic_arn = var.sns_topic_arn
+  # rds_free_storage_threshold_bytes = 2147483648 # optional override
 }
