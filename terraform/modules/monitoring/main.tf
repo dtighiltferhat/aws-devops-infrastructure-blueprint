@@ -60,7 +60,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_latency" {
   tags          = local.common_tags
 }
 
-# --- ASG/EC2: CPU ---
+# --- ALB: Unhealthy targets ---
 resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
   alarm_name          = "${var.name}-alb-unhealthy-hosts"
   alarm_description   = "Unhealthy targets behind ALB"
