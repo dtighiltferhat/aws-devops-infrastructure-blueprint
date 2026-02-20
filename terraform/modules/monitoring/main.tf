@@ -61,21 +61,22 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_latency" {
 }
 
 # --- ASG/EC2: CPU ---
-resource "aws_cloudwatch_metric_alarm" "asg_cpu_high" {
-  alarm_name          = "${var.name}-asg-cpu-high"
-  alarm_description   = "High average CPU across ASG instances"
+resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
+  alarm_name          = "${var.name}-alb-unhealthy-hosts"
+  alarm_description   = "Unhealthy targets behind ALB"
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = 3
+  evaluation_periods  = 2
   period              = 60
   statistic           = "Average"
-  threshold           = 70
+  threshold           = 0
   treat_missing_data  = "notBreaching"
 
-  namespace   = "AWS/EC2"
-  metric_name = "CPUUtilization"
+  namespace   = "AWS/ApplicationELB"
+  metric_name = "UnHealthyHostCount"
 
   dimensions = {
-    AutoScalingGroupName = var.asg_name
+    LoadBalancer = var.alb_arn_suffix
+    TargetGroup  = var.target_group_arn_suffix
   }
 
   alarm_actions = local.alarm_actions
@@ -114,7 +115,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_free_storage_low" {
   evaluation_periods  = 2
   period              = 300
   statistic           = "Average"
-  threshold           = 2147483648 # 2 GiB in bytes
+  threshold           = var.rds_free_storage_threshold_bytes
   treat_missing_data  = "notBreaching"
 
   namespace   = "AWS/RDS"
