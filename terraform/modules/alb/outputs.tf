@@ -24,9 +24,11 @@ output "listener_arn" {
 }
 
 output "alb_arn_suffix" {
+  description = "ALB ARN suffix used for CloudWatch metrics and scaling policies"
   value = aws_lb.this.arn_suffix
 }
 
 output "target_group_arn_suffix" {
+  description = "Target group ARN suffix used for CloudWatch metrics and scaling policies"
   value = aws_lb_target_group.this.arn_suffix
 }
