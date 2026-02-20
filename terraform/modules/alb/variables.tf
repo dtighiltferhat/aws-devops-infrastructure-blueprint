@@ -28,6 +28,10 @@ variable "listener_protocol" {
   description = "ALB listener protocol"
   type        = string
   default     = "HTTP"
+  validation {
+    condition     = contains(["HTTP"], upper(var.listener_protocol))
+    error_message = "listener_protocol must be HTTP. HTTPS is configured separately via enable_https."
+  }
 }
 
 variable "target_port" {
@@ -89,6 +93,10 @@ variable "enable_access_logs" {
 variable "access_logs_bucket" {
   type        = string 
   default     = "" 
+  validation {
+    condition     = (var.enable_access_logs == false) || (length(var.access_logs_bucket) > 0)
+    error_message = "access_logs_bucket must be set when enable_access_logs=true."
+  }
 }
 
 variable "access_logs_prefix" {
