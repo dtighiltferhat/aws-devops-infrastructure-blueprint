@@ -109,6 +109,7 @@ module "monitoring" {
   db_identifier            = module.rds.db_identifier
 
   # sns_topic_arn = "" # optional later
+  # rds_free_storage_threshold_bytes = 2147483648 # optional override
 }
 
 
