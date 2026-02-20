@@ -19,7 +19,7 @@ module "alb" {
   name        = var.name
   environment = var.environment
 
-  vpc_id           = module.vpc.vpc_id
+  vpc_id            = module.vpc.vpc_id
   public_subnet_ids = module.vpc.public_subnet_ids
 
   listener_port     = 80
@@ -41,7 +41,7 @@ module "ec2" {
   name        = var.name
   environment = var.environment
 
-  vpc_id            = module.vpc.vpc_id
+  vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnet_ids
 
   alb_sg_id        = module.alb.alb_sg_id
@@ -54,7 +54,12 @@ module "ec2" {
   desired_capacity = var.desired_capacity
   max_size         = var.max_size
 
-  enable_ssm = true
+  enable_ssm                = true
+  enable_autoscaling        = true
+  scale_policy              = "alb_request"
+  alb_requests_per_target   = 100
+  alb_arn_suffix            = module.alb.alb_arn_suffix
+  target_group_arn_suffix   = module.alb.target_group_arn_suffix
   tags       = var.tags
 }
 
@@ -64,7 +69,7 @@ module "rds" {
   name        = var.name
   environment = var.environment
 
-  vpc_id            = module.vpc.vpc_id
+  vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnet_ids
 
   app_sg_id = module.ec2.app_sg_id
