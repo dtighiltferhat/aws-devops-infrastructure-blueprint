@@ -23,6 +23,18 @@ resource "aws_security_group" "alb" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  dynamic "ingress" {
+    for_each = var.enable_https ? [1] : []
+    content {
+      description      = "Allow inbound HTTPS"
+      from_port        = 443
+      to_port          = 443
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+  }
+
   egress {
     description      = "Allow all outbound"
     from_port        = 0
@@ -44,6 +56,17 @@ resource "aws_lb" "this" {
 
   security_groups = [aws_security_group.alb.id]
   subnets         = var.public_subnet_ids
+  idle_timeout    = 60
+  enable_deletion_protection = var.deletion_protection
+
+  dynamic "access_logs" {
+    for_each = var.enable_access_logs ? [1] : []
+    content {
+      bucket  = var.access_logs_bucket
+      prefix  = var.access_logs_prefix
+      enabled = true
+    }
+  }
 
   tags = merge(local.common_tags, {
     Name = "${var.name}-alb"
