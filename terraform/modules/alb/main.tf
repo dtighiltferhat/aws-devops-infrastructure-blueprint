@@ -56,7 +56,8 @@ resource "aws_lb" "this" {
 
   security_groups = [aws_security_group.alb.id]
   subnets         = var.public_subnet_ids
-  idle_timeout    = 60
+  
+  idle_timeout               = 60
   enable_deletion_protection = var.deletion_protection
 
   dynamic "access_logs" {
