@@ -108,10 +108,39 @@ variable "alb_arn_suffix" {
   description = "ALB ARN suffix (required for alb_request policy)"
   type        = string
   default     = ""
+  validation {
+    condition     = (var.scale_policy != "alb_request") || (length(var.alb_arn_suffix) > 0)
+    error_message = "alb_arn_suffix must be set when scale_policy = \"alb_request\"."
+  }
 }
 
 variable "target_group_arn_suffix" {
   description = "Target group ARN suffix (required for alb_request policy)"
   type        = string
   default     = ""
+  validation {
+    condition     = (var.scale_policy != "alb_request") || (length(var.target_group_arn_suffix) > 0)
+    error_message = "target_group_arn_suffix must be set when scale_policy = \"alb_request\"."
+  }
+}
+
+variable "enable_instance_refresh" {
+  type    = bool
+  default = true
+}
+
+variable "instance_refresh_min_healthy_percentage" {
+  type    = number
+  default = 90
+}
+
+variable "instance_refresh_warmup" {
+  type    = number
+  default = 180
+}
+
+variable "estimated_instance_warmup" {
+  description = "Seconds ASG should wait before considering a newly launched instance in scaling metrics"
+  type        = number
+  default     = 180
 }
