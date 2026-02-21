@@ -9,8 +9,8 @@ module "vpc" {
   az_count             = 3
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
-  enable_nat_gateway   = true
-  single_nat_gateway   = true # cost-conscious prod; set false for full HA
+  enable_nat_gateway   = var.enable_nat_gateway
+  single_nat_gateway   = var.single_nat_gateway
 
   tags = var.tags
 }
