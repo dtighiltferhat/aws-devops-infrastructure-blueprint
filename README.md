@@ -189,10 +189,11 @@ terraform destroy
 
 ## 🗄️ RDS Setup (Optional – Requires enable_rds = true)
 
-This section applies only when `enable_rds = true` in your environment configuration.
+This section applies when your environment provisions RDS (DEV uses `enable_rds = true`; PROD provisions RDS by default).
 
 ### 1) Create the DB password in SSM (required)
 
+#### 1) In Dev
 ```bash
 aws ssm put-parameter \
   --name "/aws-devops-infrastructure-blueprint/dev/db_password" \
@@ -201,11 +202,28 @@ aws ssm put-parameter \
   --overwrite
 ```
 
+#### 2) In Prod
+```bash
+aws ssm put-parameter \
+  --name "/aws-devops-infrastructure-blueprint/prod/db_password" \
+  --type "SecureString" \
+  --value "REPLACE_WITH_STRONG_PASSWORD" \
+  --overwrite
+```
+
 ### 2) Verify the parameter exists (optional)
 
+#### 1) In Dev
 ```bash
 aws ssm get-parameter \
   --name "/aws-devops-infrastructure-blueprint/dev/db_password" \
+  --with-decryption
+```
+
+#### 2) In Prod
+```bash
+aws ssm get-parameter \
+  --name "/aws-devops-infrastructure-blueprint/prod/db_password" \
   --with-decryption
 ```
 
