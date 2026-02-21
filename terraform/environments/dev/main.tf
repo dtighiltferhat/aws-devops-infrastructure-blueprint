@@ -53,8 +53,8 @@ module "ec2" {
   instance_type     = "t3.micro"
 
   min_size          = 1
-  desired_capacity  = 2
-  max_size          = 3
+  desired_capacity = var.asg_desired_capacity
+  max_size         = var.asg_max_size
 
   enable_ssm         = true
   enable_autoscaling = true
@@ -65,13 +65,15 @@ module "ec2" {
 }
 
 module "rds" {
+  count  = var.enable_rds ? 1 : 0
   source = "../../modules/rds"
 
   name        = var.name
   environment = var.environment
 
-  vpc_id             = module.vpc.vpc_id
+  vpc_id              = module.vpc.vpc_id
   private_subnet_ids  = module.vpc.private_subnet_ids
+  app_sg_id           = module.ec2.app_sg_id
 
   # Allow DB access ONLY from app instances
   app_sg_id = module.ec2.app_sg_id
@@ -108,7 +110,7 @@ module "monitoring" {
 
   alb_arn_suffix           = module.alb.alb_arn_suffix
   target_group_arn_suffix  = module.alb.target_group_arn_suffix
-  db_identifier            = module.rds.db_identifier
+  db_identifier            = var.enable_rds ? module.rds[0].db_identifier : ""
 
   # sns_topic_arn = "" # optional later
   # rds_free_storage_threshold_bytes = 2147483648 # optional override
