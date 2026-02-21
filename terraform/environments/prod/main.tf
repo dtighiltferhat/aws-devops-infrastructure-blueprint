@@ -62,7 +62,8 @@ module "ec2" {
   alb_requests_per_target   = 100
   alb_arn_suffix            = module.alb.alb_arn_suffix
   target_group_arn_suffix   = module.alb.target_group_arn_suffix
-  tags       = var.tags
+  
+  tags = var.tags
 }
 
 module "rds" {
