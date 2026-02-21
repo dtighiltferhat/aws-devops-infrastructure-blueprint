@@ -51,7 +51,7 @@ This project models enterprise DevOps patterns commonly used in production AWS e
 
 ## 💸 Cost-Safe Defaults (Portfolio Mode)
 
-By default, the **DEV** environment is configured to keep AWS spend minimal while still demonstrating production patterns.
+The DEV environment runs in “portfolio mode” by default to minimize AWS cost while preserving production-ready architecture patterns.
 
 **DEV defaults:**
 - `enable_nat_gateway = false` (NAT disabled)
