@@ -9,6 +9,8 @@ module "vpc" {
   az_count             = 3
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
+  enable_nat_gateway   = var.enable_nat_gateway
+  single_nat_gateway   = var.single_nat_gateway
 
   tags = var.tags
 }
@@ -28,9 +30,9 @@ module "alb" {
   target_protocol    = "HTTP"
   health_check_path  = "/"
  
-  enable_https                  = true
-  certificate_arn               = var.certificate_arn
-  enable_http_to_https_redirect = true
+  enable_https                  = var.enable_https
+  certificate_arn               = var.enable_https ? var.certificate_arn : null
+  enable_http_to_https_redirect = var.enable_https
 
   tags = var.tags
 }
