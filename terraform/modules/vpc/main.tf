@@ -22,6 +22,17 @@ locals {
     },
     var.tags
   )
+  # When NAT is enabled:
+  # - single_nat_gateway=true  => 1 NAT in first AZ
+  # - single_nat_gateway=false => NAT per AZ
+  nat_subnet_map = (
+    var.enable_nat_gateway
+    ? (var.single_nat_gateway
+        ? { (local.azs[0]) = aws_subnet.public[local.azs[0]] }
+        : aws_subnet.public
+      )
+    : {}
+  )
 }
 
 resource "aws_vpc" "this" {
@@ -98,7 +109,7 @@ resource "aws_route_table_association" "public" {
 
 # NAT per AZ: allocate EIP per AZ
 resource "aws_eip" "nat" {
-  for_each = aws_subnet.public
+  for_each = local.nat_subnet_map
 
   domain = "vpc"
 
@@ -109,7 +120,7 @@ resource "aws_eip" "nat" {
 
 # NAT Gateway per AZ (in public subnet)
 resource "aws_nat_gateway" "this" {
-  for_each = aws_subnet.public
+  for_each = local.nat_subnet_map
 
   allocation_id = aws_eip.nat[each.key].id
   subnet_id     = each.value.id
@@ -134,11 +145,14 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route" "private_default" {
-  for_each = aws_route_table.private
+  for_each = var.enable_nat_gateway ? aws_route_table.private : {}
 
   route_table_id         = each.value.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.this[each.key].id
+
+  nat_gateway_id = var.single_nat_gateway
+    ? aws_nat_gateway.this[local.azs[0]].id
+    : aws_nat_gateway.this[each.key].id
 }
 
 # Associate each private subnet to its own private route table
