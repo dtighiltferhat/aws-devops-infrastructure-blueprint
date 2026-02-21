@@ -9,6 +9,8 @@ module "vpc" {
   az_count             = 3
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
+  enable_nat_gateway   = true
+  single_nat_gateway   = true # cost-conscious prod; set false for full HA
 
   tags = var.tags
 }
@@ -104,6 +106,7 @@ module "monitoring" {
 
   alb_arn_suffix          = module.alb.alb_arn_suffix
   target_group_arn_suffix = module.alb.target_group_arn_suffix
+  enable_rds_alarms       = true
   db_identifier           = module.rds.db_identifier
 
   # sns_topic_arn = var.sns_topic_arn
