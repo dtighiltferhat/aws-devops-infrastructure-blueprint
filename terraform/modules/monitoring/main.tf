@@ -135,59 +135,66 @@ resource "aws_cloudwatch_metric_alarm" "rds_free_storage_low" {
 }
 
 # Optional: a simple dashboard
+locals {
+  widgets_base = [
+    {
+      type = "metric"
+      x = 0, y = 0, width = 12, height = 6
+      properties = {
+        title = "ALB Target 5XX"
+        metrics = [
+          ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "LoadBalancer", var.alb_arn_suffix, "TargetGroup", var.target_group_arn_suffix]
+        ]
+        period = 60
+        stat   = "Sum"
+      }
+    },
+    {
+      type = "metric"
+      x = 0, y = 6, width = 12, height = 6
+      properties = {
+        title = "ALB UnHealthyHostCount"
+        metrics = [
+          ["AWS/ApplicationELB", "UnHealthyHostCount", "LoadBalancer", var.alb_arn_suffix, "TargetGroup", var.target_group_arn_suffix]
+        ]
+        period = 60
+        stat   = "Average"
+      }
+    }
+  ]
+
+  widgets_rds = var.enable_rds_alarms ? [
+    {
+      type = "metric"
+      x = 12, y = 0, width = 12, height = 6
+      properties = {
+        title = "RDS CPU"
+        metrics = [
+          ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", var.db_identifier]
+        ]
+        period = 60
+        stat   = "Average"
+      }
+    },
+    {
+      type = "metric"
+      x = 12, y = 6, width = 12, height = 6
+      properties = {
+        title = "RDS FreeStorageSpace"
+        metrics = [
+          ["AWS/RDS", "FreeStorageSpace", "DBInstanceIdentifier", var.db_identifier]
+        ]
+        period = 300
+        stat   = "Average"
+      }
+    }
+  ] : []
+}
+
 resource "aws_cloudwatch_dashboard" "this" {
   dashboard_name = "${var.name}-${var.environment}-dashboard"
 
   dashboard_body = jsonencode({
-    widgets = [
-      {
-        type = "metric"
-        x = 0, y = 0, width = 12, height = 6
-        properties = {
-          title = "ALB Target 5XX"
-          metrics = [
-            ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "LoadBalancer", var.alb_arn_suffix, "TargetGroup", var.target_group_arn_suffix]
-          ]
-          period = 60
-          stat   = "Sum"
-        }
-      },
-      {
-        type = "metric"
-        x = 12, y = 0, width = 12, height = 6
-        properties = {
-          title = "RDS CPU"
-          metrics = [
-            ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", var.db_identifier]
-          ]
-          period = 60
-          stat   = "Average"
-        }
-      },
-      {
-        type = "metric"
-        x = 12, y = 6, width = 12, height = 6
-        properties = {
-          title = "RDS FreeStorageSpace"
-          metrics = [
-            ["AWS/RDS", "FreeStorageSpace", "DBInstanceIdentifier", var.db_identifier]
-          ]
-          period = 300
-          stat   = "Average"
-        }
-      },
-      {
-        type = "metric"
-        x = 0, y = 6, width = 12, height = 6
-        properties = {
-          title = "ALB UnHealthyHostCount"
-          metrics = [
-            ["AWS/ApplicationELB", "UnHealthyHostCount", "LoadBalancer", var.alb_arn_suffix, "TargetGroup", var.target_group_arn_suffix]
-          ]
-          period = 60
-          stat   = "Average"
-        }
-      }
-    ]
+    widgets = concat(local.widgets_base, local.widgets_rds)
   })
 }
