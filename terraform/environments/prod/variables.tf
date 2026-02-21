@@ -1,8 +1,16 @@
-variable "name"        { type = string }
-variable "environment" { type = string }
-variable "region"      { type = string }
+variable "name"        {
+  type = string 
+}
+variable "environment" {
+  type = string 
+}
+variable "region"      {
+  type = string 
+}
 
-variable "vpc_cidr" { type = string }
+variable "vpc_cidr" {
+  type = string 
+}
 
 variable "public_subnet_cidrs" {
   type = list(string)
@@ -17,9 +25,15 @@ variable "tags" {
   default = {}
 }
 
+variable "enable_https" {
+  type    = string
+  default = null
+}
+
 # ALB / ACM
 variable "certificate_arn" {
   type        = string
+  default     = null
   description = "ACM certificate ARN in the same region as the ALB"
 }
 
@@ -53,6 +67,18 @@ variable "db_instance_class" {
 variable "db_allocated_storage" {
   type    = number
   default = 20
+}
+
+variable "enable_nat_gateway" {
+  type        = bool
+  description = "Enable NAT Gateways for private subnet egress"
+  default     = true
+}
+
+variable "single_nat_gateway" {
+  type        = bool
+  description = "Use a single NAT Gateway to reduce cost (set false for per-AZ NAT)"
+  default     = true
 }
 
 # Optional later
