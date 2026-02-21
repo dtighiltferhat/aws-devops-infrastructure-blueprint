@@ -67,9 +67,10 @@ module "ec2" {
 module "rds" {
   count  = var.enable_rds ? 1 : 0
   source = "../../modules/rds"
-
-  name        = var.name
-  environment = var.environment
+  
+  name              = var.name
+  environment       = var.environment
+  enable_rds_alarms = var.enable_rds
 
   vpc_id              = module.vpc.vpc_id
   private_subnet_ids  = module.vpc.private_subnet_ids
