@@ -86,6 +86,8 @@ resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
 
 # --- RDS: CPU ---
 resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
+  count = var.enable_rds_alarms ? 1 : 0
+
   alarm_name          = "${var.name}-rds-cpu-high"
   alarm_description   = "High RDS CPU"
   comparison_operator = "GreaterThanThreshold"
@@ -109,6 +111,8 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
 
 # --- RDS: Free storage ---
 resource "aws_cloudwatch_metric_alarm" "rds_free_storage_low" {
+  count = var.enable_rds_alarms ? 1 : 0
+
   alarm_name          = "${var.name}-rds-free-storage-low"
   alarm_description   = "Low RDS free storage"
   comparison_operator = "LessThanThreshold"
