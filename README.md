@@ -156,7 +156,7 @@ terraform destroy
 
 ```bash
 aws ssm put-parameter \
-  --name "/aws-devops-infra-blueprint/dev/db_password" \
+  --name "/aws-devops-infrastructure-blueprint/dev/db_password" \
   --type "SecureString" \
   --value "REPLACE_WITH_STRONG_PASSWORD" \
   --overwrite
@@ -166,7 +166,7 @@ aws ssm put-parameter \
 
 ```bash
 aws ssm get-parameter \
-  --name "/aws-devops-infra-blueprint/dev/db_password" \
+  --name "/aws-devops-infrastructure-blueprint/dev/db_password" \
   --with-decryption
 ```
 
