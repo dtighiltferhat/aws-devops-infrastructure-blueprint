@@ -25,11 +25,6 @@ variable "tags" {
   default = {}
 }
 
-variable "enable_https" {
-  type    = string
-  default = null
-}
-
 # ALB / ACM
 variable "certificate_arn" {
   type        = string
