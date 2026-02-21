@@ -42,3 +42,13 @@ output "internet_gateway_id" {
   description = "Internet Gateway ID"
   value       = aws_internet_gateway.this.id
 }
+
+output "nat_enabled" {
+  description = "Whether NAT Gateways are enabled"
+  value       = var.enable_nat_gateway
+}
+
+output "single_nat_gateway" {
+  description = "Whether using a single NAT Gateway (when enabled)"
+  value       = var.single_nat_gateway
+}
