@@ -70,12 +70,10 @@ module "rds" {
   
   name              = var.name
   environment       = var.environment
-  enable_rds_alarms = var.enable_rds
 
   vpc_id              = module.vpc.vpc_id
   private_subnet_ids  = module.vpc.private_subnet_ids
-  app_sg_id           = module.ec2.app_sg_id
-
+  
   # Allow DB access ONLY from app instances
   app_sg_id = module.ec2.app_sg_id
 
