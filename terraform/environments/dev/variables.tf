@@ -36,6 +36,12 @@ variable "private_subnet_cidrs" {
   default     = ["10.10.128.0/20", "10.10.144.0/20", "10.10.160.0/20"]
 }
 
+variable "certificate_arn" {
+  type        = string
+  description = "ACM certificate ARN for HTTPS listener (required if enable_https = true)"
+  default     = null
+}
+
 variable "tags" {
   type        = map(string)
   description = "Additional tags"
