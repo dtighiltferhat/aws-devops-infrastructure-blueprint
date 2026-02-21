@@ -58,3 +58,14 @@ variable "tags" {
   default     = {}
 }
 
+variable "enable_nat_gateway" {
+  description = "Whether to create NAT Gateway(s) for private subnet egress"
+  type        = bool
+  default     = false
+}
+
+variable "single_nat_gateway" {
+  description = "When NAT is enabled, create a single NAT Gateway (cheaper) instead of one per AZ"
+  type        = bool
+  default     = true
+}
