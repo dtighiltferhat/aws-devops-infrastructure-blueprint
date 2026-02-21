@@ -30,6 +30,10 @@ variable "certificate_arn" {
   type        = string
   default     = null
   description = "ACM certificate ARN in the same region as the ALB"
+  validation {
+    condition     = length(var.certificate_arn) > 0
+    error_message = "certificate_arn must be provided for PROD."
+  }
 }
 
 # EC2 sizing for prod
