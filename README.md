@@ -62,6 +62,8 @@ The DEV environment runs in “portfolio mode” by default to minimize AWS cost
 
 > Note: When NAT is disabled, private instances do not have outbound internet access, so OS package installs (e.g., `dnf install`) may fail unless you enable NAT or use VPC endpoints / a pre-baked AMI.
 
+The PROD environment can be configured to enable NAT, HTTPS, RDS, and higher scaling limits to reflect a more realistic production profile.
+
 ### Enable Production Features
 
 You can switch from “portfolio mode” to more production-like behavior by enabling features via `terraform.tfvars` in the environment folder (e.g., `terraform/environments/dev/terraform.tfvars`).
@@ -98,7 +100,7 @@ asg_max_size         = 4
   - Security groups
 - Application Load Balancer in public subnets
 - EC2 instances in private subnets
-- RDS database in private subnets with DB subnet group
+- RDS database deployed in private subnets with dedicated DB subnet group and security group isolation
 - Standardized tagging strategy
 - Structured outputs and documentation
 - HTTPS listener with ACM certificate on ALB
@@ -185,7 +187,9 @@ terraform destroy
 
 ---
 
-## 🗄️ How to Run RDS (SSM Secret Setup + Connectivity)
+## 🗄️ RDS Setup (Optional – Requires enable_rds = true)
+
+This section applies only when `enable_rds = true` in your environment configuration.
 
 ### 1) Create the DB password in SSM (required)
 
