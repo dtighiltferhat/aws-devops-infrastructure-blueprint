@@ -37,7 +37,6 @@ This infrastructure blueprint is designed to reflect a real-world cloud architec
 - Containerized workloads
 - Kubernetes-based service orchestration
 
-
 ## 🧠 Architectural Decisions
 
 - Infrastructure split into reusable modules for scalability and maintainability
@@ -50,6 +49,42 @@ Designed to support secure, production-scale workloads with repeatable and audit
 
 This project models enterprise DevOps patterns commonly used in production AWS environments.
 
+## 💸 Cost-Safe Defaults (Portfolio Mode)
+
+By default, the **DEV** environment is configured to keep AWS spend minimal while still demonstrating production patterns.
+
+**DEV defaults:**
+- `enable_nat_gateway = false` (NAT disabled)
+- `enable_rds = false` (RDS disabled)
+- `enable_https = false` (HTTPS disabled)
+- `asg_desired_capacity = 1`
+- `asg_max_size = 1`
+
+> Note: When NAT is disabled, private instances do not have outbound internet access, so OS package installs (e.g., `dnf install`) may fail unless you enable NAT or use VPC endpoints / a pre-baked AMI.
+
+### Enable Production Features
+
+You can switch from “portfolio mode” to more production-like behavior by enabling features via `terraform.tfvars` in the environment folder (e.g., `terraform/environments/dev/terraform.tfvars`).
+
+Example:
+
+```
+# Networking
+enable_nat_gateway = true
+single_nat_gateway = true   # cheaper than NAT per AZ
+
+# App entry
+enable_https    = true
+certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/xxxx-xxxx"
+
+# Data layer
+enable_rds = true
+
+# Scaling (still controlled)
+asg_desired_capacity = 2
+asg_max_size         = 4
+```
+
 ### ✅ Core (Production-Grade) Features
 
 - Remote Terraform state stored in S3
@@ -58,7 +93,7 @@ This project models enterprise DevOps patterns commonly used in production AWS e
 - Modular infrastructure:
   - VPC
   - Public & private subnets
-  - NAT Gateway
+  - NAT Gateway (enabled in PROD; optional/disabled by default in DEV for cost control)
   - Route tables
   - Security groups
 - Application Load Balancer in public subnets
