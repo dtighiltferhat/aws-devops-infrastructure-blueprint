@@ -67,7 +67,7 @@ variable "enable_https" {
 variable "certificate_arn" {
   description     = "ACM certificate ARN (must be in same region as ALB)"
   type            = string
-  default         = ""
+  default         = null
   validation {
     condition     = (var.enable_https == false) || (length(var.certificate_arn) > 0)
     error_message = "certificate_arn must be set when enable_https=true."
