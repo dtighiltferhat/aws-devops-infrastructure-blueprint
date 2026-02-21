@@ -105,9 +105,10 @@ module "rds" {
 module "monitoring" {
   source = "../../modules/monitoring"
 
-  name        = var.name
-  environment = var.environment
-  tags        = var.tags
+  name              = var.name
+  environment       = var.environment
+  enable_rds_alarms = var.enable_rds
+  tags              = var.tags
 
   alb_arn_suffix           = module.alb.alb_arn_suffix
   target_group_arn_suffix  = module.alb.target_group_arn_suffix
