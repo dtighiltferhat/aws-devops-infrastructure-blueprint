@@ -43,3 +43,39 @@ variable "tags" {
     Owner = "dtighiltferhat"
   }
 }
+
+variable "enable_nat_gateway" {
+  type        = bool
+  description = "Enable NAT for private subnets (costly). Keep false for cheap dev."
+  default     = false
+}
+
+variable "single_nat_gateway" {
+  type        = bool
+  description = "If NAT enabled, create only one NAT (cheaper)."
+  default     = true
+}
+
+variable "enable_https" {
+  type        = bool
+  description = "Enable HTTPS listener on ALB (requires ACM cert ARN)."
+  default     = false
+}
+
+variable "enable_rds" {
+  type        = bool
+  description = "Enable RDS (costly). Keep false for cheap dev."
+  default     = false
+}
+
+variable "asg_desired_capacity" {
+  type        = number
+  description = "ASG desired capacity"
+  default     = 1
+}
+
+variable "asg_max_size" {
+  type        = number
+  description = "ASG max size"
+  default     = 1
+}
