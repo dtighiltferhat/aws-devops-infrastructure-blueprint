@@ -35,3 +35,9 @@ variable "rds_free_storage_threshold_bytes" {
   type        = number
   default     = 2147483648
 }
+
+variable "enable_rds_alarms" {
+  type        = bool
+  description = "Enable RDS alarms/widgets"
+  default     = false
+}
